@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AitoResume - AI简历生成器</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- 添加Cropper.js CSS -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <a class="navbar-brand" href="#">AitoResume</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="#">首页</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#about">关于</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+              <h3 class="mb-0">AI智能简历生成器</h3>
+            </div>
+            <div class="card-body">
+              <form id="resume-form" enctype="multipart/form-data">
+                <!-- 照片上传区 - 简化为上传和预览 -->
+                <div class="mb-4">
+                  <label for="photo-upload" class="form-label fw-bold"
+                    >上传照片 (可选)</label
+                  >
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="photo-upload"
+                    name="photo"
+                    accept="image/*"
+                  />
+                  <div class="form-text">
+                    建议上传证件照，支持JPG、PNG格式，大小不超过10MB
+                  </div>
+                  <div id="file-error" class="text-danger mt-2 d-none">
+                    文件大小超过限制，请选择小于10MB的图片
+                  </div>
+                </div>
+
+                <!-- 照片预览区 -->
+                <div
+                  class="mb-4 text-center d-none"
+                  id="photo-preview-container"
+                >
+                  <h6>照片已设置</h6>
+                  <img
+                    id="photo-preview"
+                    class="img-thumbnail"
+                    style="max-height: 160px"
+                  />
+                  <div class="mt-1">
+                    <button
+                      type="button"
+                      id="change-photo"
+                      class="btn btn-sm btn-outline-primary"
+                    >
+                      更换照片
+                    </button>
+                  </div>
+                  <!-- 隐藏的裁剪后照片数据字段 -->
+                  <input type="hidden" id="cropped-data" name="cropped_photo" />
+                </div>
+
+                <div class="mb-4">
+                  <label for="job-description" class="form-label fw-bold"
+                    >岗位描述</label
+                  >
+                  <textarea
+                    class="form-control"
+                    id="job-description"
+                    name="job_description"
+                    rows="10"
+                    placeholder="请粘贴岗位描述，AI将根据您的个人信息和岗位要求生成匹配的简历内容..."
+                    required
+                  ></textarea>
+                </div>
+
+                <div class="d-grid gap-2">
+                  <button
+                    type="submit"
+                    class="btn btn-primary btn-lg"
+                    id="generate-btn"
+                  >
+                    <span id="btn-text">生成简历</span>
+                    <div
+                      id="loading-spinner"
+                      class="spinner-border spinner-border-sm ms-2 d-none"
+                      role="status"
+                    >
+                      <span class="visually-hidden">加载中...</span>
+                    </div>
+                  </button>
+                </div>
+              </form>
+
+              <!-- 结果区域 -->
+              <div id="result-section" class="mt-4 text-center d-none">
+                <div class="alert alert-success">
+                  <h5>简历生成成功!</h5>
+                  <p>您可以预览或下载生成的简历</p>
+                </div>
+                <div class="d-flex justify-content-center gap-3">
+                  <a
+                    id="preview-link"
+                    href="#"
+                    target="_blank"
+                    class="btn btn-outline-primary"
+                  >
+                    <i class="bi bi-eye"></i> 预览简历
+                  </a>
+                  <a
+                    id="download-link"
+                    href="#"
+                    download
+                    class="btn btn-outline-success"
+                  >
+                    <i class="bi bi-download"></i> 下载HTML
+                  </a>
+                </div>
+              </div>
+
+              <!-- 错误提示 -->
+              <div id="error-alert" class="alert alert-danger mt-3 d-none">
+                <strong>错误:</strong> <span id="error-message"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mt-4 shadow">
+            <div class="card-header bg-light">
+              <h5 class="mb-0">使用说明</h5>
+            </div>
+            <div class="card-body">
+              <ol>
+                <li>
+                  <strong>上传照片</strong>（可选）
+                  <ul>
+                    <li>支持上传JPG、PNG格式图片，大小不超过10MB</li>
+                    <li>可以调整照片位置、大小和旋转角度</li>
+                    <li>推荐使用3:4比例的证件照以获得最佳效果</li>
+                  </ul>
+                </li>
+                <li>粘贴完整的<strong>岗位描述</strong>到文本框中</li>
+                <li>点击"生成简历"，系统将分析岗位要求</li>
+                <li>AI会根据您的个人资料和岗位匹配度，生成个性化简历</li>
+                <li>查看生成的简历，您可以直接打印或保存为PDF</li>
+              </ol>
+              <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i>
+                提示：生成过程可能需要10-30秒，请耐心等待
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 添加裁剪模态窗口 -->
+    <div
+      class="modal fade"
+      id="cropModal"
+      tabindex="-1"
+      aria-labelledby="cropModalLabel"
+      aria-hidden="true"
+      data-bs-backdrop="static"
+    >
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="cropModalLabel">裁剪照片</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="关闭"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p class="text-muted small">
+              拖动照片调整位置，滚轮可缩放照片。建议裁剪为3:4比例的证件照尺寸。
+            </p>
+            <div class="d-flex flex-column align-items-center">
+              <div class="image-container mb-3">
+                <img
+                  id="crop-image"
+                  src=""
+                  alt="上传照片"
+                  style="max-width: 100%"
+                />
+              </div>
+              <div class="preview-container">
+                <h6>预览效果</h6>
+                <div
+                  id="preview-box"
+                  style="
+                    width: 120px;
+                    height: 160px;
+                    overflow: hidden;
+                    border: 1px solid #ccc;
+                    margin: 0 auto;
+                    background-color: #f8f8f8;
+                  "
+                ></div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              id="rotate-btn"
+              class="btn btn-secondary me-auto"
+            >
+              旋转 90°
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              data-bs-dismiss="modal"
+            >
+              取消
+            </button>
+            <button type="button" id="confirm-crop" class="btn btn-success">
+              确认裁剪
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="bg-light py-4 mt-5">
+      <div class="container text-center">
+        <p class="mb-0">© 2025 AitoResume - AI智能简历生成器</p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- 添加Cropper.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>
