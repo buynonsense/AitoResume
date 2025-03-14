@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ personal.name }} - 个人简历</title>
+    <style>
+      /* 全局样式 */
+      body {
+        font-family: "Microsoft YaHei", "SimHei", sans-serif;
+        margin: 0;
+        padding: 0;
+        color: #333;
+        line-height: 1.5;
+        background-color: #f5f5f5;
+      }
+
+      .container {
+        display: flex;
+        max-width: 210mm; /* A4宽度 */
+        margin: 0 auto;
+        background-color: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        min-height: 297mm; /* A4高度 */
+      }
+
+      /* 侧边栏样式 */
+      .sidebar {
+        width: 30%;
+        background-color: #f0f8ff;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      /* 主内容区样式 */
+      .main-content {
+        width: 70%;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+
+      /* 个人照片样式 */
+      .photo-container {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .photo {
+        width: 120px;
+        height: 160px;
+        object-fit: cover;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+      }
+
+      /* 节标题样式 */
+      h1 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 24px;
+      }
+
+      h2 {
+        color: #3498db;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 5px;
+        margin-top: 20px;
+        font-size: 18px;
+      }
+
+      h3 {
+        color: #2c3e50;
+        margin-bottom: 5px;
+        font-size: 16px;
+      }
+
+      /* 个人信息样式 */
+      .info-item {
+        margin: 8px 0;
+      }
+
+      .icon {
+        margin-right: 10px;
+        color: #3498db;
+      }
+
+      /* 教育经历样式 */
+      .edu-item {
+        margin-bottom: 15px;
+      }
+
+      .edu-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+      }
+
+      .institution {
+        font-weight: bold;
+      }
+
+      .time-period {
+        color: #7f8c8d;
+        font-style: italic;
+      }
+
+      /* 项目经验样式 */
+      .project-item {
+        margin-bottom: 20px;
+      }
+
+      .project-header {
+        margin-bottom: 5px;
+      }
+
+      .job-intention {
+        text-align: center;
+        font-style: italic;
+        color: #7f8c8d;
+        margin-bottom: 20px;
+      }
+
+      /* 技能和证书样式 */
+      .skills,
+      .certificates {
+        margin-top: 10px;
+      }
+
+      .certificates ul {
+        padding-left: 20px;
+        margin: 0;
+      }
+
+      .certificates li {
+        margin-bottom: 8px;
+      }
+
+      /* 页面打印相关 */
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      @media print {
+        body {
+          background-color: white;
+        }
+
+        .container {
+          box-shadow: none;
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      /* 添加首行缩进样式 */
+      .indent,
+      p.indent {
+        text-indent: 2em;
+      }
+
+      /* 改进段落间距 */
+      p {
+        margin-bottom: 0.8em;
+        line-height: 1.6;
+      }
+
+      /* 主修课程样式优化 */
+      .courses {
+        line-height: 1.6;
+        background-color: #f9f9f9;
+        padding: 12px 15px;
+        border-radius: 6px;
+        border-left: 3px solid #3498db;
+      }
+
+      /* 技能项目布局 */
+      .skills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .skill-item {
+        background: #f0f7ff;
+        padding: 5px 10px;
+        border-radius: 4px;
+        margin-bottom: 5px;
+        display: inline-block;
+        border-left: 2px solid #3498db;
+      }
+
+      /* 项目经验格式改进 */
+      .project-description p {
+        text-indent: 0;
+      }
+
+      .project-description p strong {
+        font-weight: 600;
+        color: #2c3e50;
+      }
+
+      /* 非缩进样式应用 */
+      .no-indent p {
+        text-indent: 0 !important;
+      }
+
+      /* 项目描述部分 */
+      .project-description {
+        margin-top: 10px;
+      }
+
+      /* 自我评价位于侧边栏时的样式 */
+      .sidebar .self-evaluation p {
+        text-indent: 0;
+        font-size: 0.9em;
+        margin-bottom: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 左侧边栏 -->
+      <div class="sidebar">
+        <!-- 个人照片 -->
+        {% if photo_path %}
+        <div class="photo-container">
+          <img src="{{ photo_path }}" alt="个人照片" class="photo" />
+        </div>
+        {% endif %}
+
+        <!-- 个人信息 -->
+        <div class="section">
+          <h2>个人信息</h2>
+          <div class="personal-info">
+            <div class="info-item">
+              <span class="icon">📧</span>
+              <span>{{ personal.email }}</span>
+            </div>
+            <div class="info-item">
+              <span class="icon">📱</span>
+              <span>{{ personal.phone }}</span>
+            </div>
+            <div class="info-item">
+              <span class="icon">🎓</span>
+              <span>{{ personal.education_level }}</span>
+            </div>
+            <div class="info-item">
+              <span class="icon">🎂</span>
+              <span>{{ personal.birth }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 技能部分 -->
+        <div class="section">
+          <h2>专业技能</h2>
+          <div class="skills">{{ job_content.掌握技能 }}</div>
+        </div>
+
+        <!-- 证书部分 -->
+        <div class="section">
+          <h2>证书</h2>
+          <div class="certificates">
+            <ul>
+              {% for cert in personal.certificates %}
+              <li>
+                <strong>{{ cert.name }}</strong> ({{ cert.date }}) {% if
+                cert.score %} - 分数: {{ cert.score }}{% endif %}
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+        <!-- 自我评价 -->
+        <div class="section">
+          <h2>自我评价</h2>
+          <div class="self-evaluation">{{ job_content.自我评价 }}</div>
+        </div>
+      </div>
+
+      <!-- 主内容区 -->
+      <div class="main-content">
+        <!-- 标题 -->
+        <div class="header">
+          <h1>{{ personal.name }}</h1>
+          <div class="job-intention">{{ job_content.求职意向 }}</div>
+        </div>
+
+        <!-- 教育经历 -->
+        <div class="section">
+          <h2>教育经历</h2>
+          <div class="education">
+            {% for edu in personal.education %}
+            <div class="edu-item">
+              <div class="edu-header">
+                <span class="institution">{{ edu.institution }}</span>
+                <span class="degree">{{ edu.degree }}</span>
+              </div>
+              <div class="edu-details">
+                <span class="time-period">{{ edu.time_period }}</span>
+                {% if edu.gpa %}
+                <span class="gpa">GPA: {{ edu.gpa }}</span>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- 主修课程 -->
+        <div class="section">
+          <h2>主修课程</h2>
+          <div class="courses indent">{{ job_content.主修课程 }}</div>
+        </div>
+
+        <!-- 项目经验 -->
+        <div class="section">
+          <h2>项目经验</h2>
+          <div class="projects">
+            {% for project in projects %}
+            <div class="project-item">
+              <div class="project-header">
+                <h3>{{ project.name }}</h3>
+                <span class="time-period">{{ project.time_period }}</span>
+              </div>
+              <div class="project-description no-indent">
+                {{ project.description }}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+# 基本依赖
+PyYAML==6.0.1         # YAML文件处理
+python-dotenv==1.0.0  # 环境变量加载
+requests==2.31.0      # HTTP请求处理
+
+# 模板渲染
+Jinja2==3.1.2         # HTML模板引擎
+
+# 图像处理
+Pillow==11.1.0        # 照片尺寸调整
+
+# Web应用
+Flask==2.3.3
+Werkzeug==2.3.7
+# 实用工具
+uuid==1.30

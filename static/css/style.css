@@ -1,0 +1,129 @@
+body {
+    background-color: #f8f9fa;
+    color: #333;
+    font-family: 'Microsoft YaHei', 'SimSun', sans-serif;
+}
+
+/* 页面标题样式 */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* 卡片阴影效果 */
+.card {
+    border: none;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+/* 表单区域调整 */
+textarea.form-control {
+    min-height: 200px;
+    font-size: 0.9rem;
+}
+
+textarea.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* 提交按钮样式 */
+#generate-btn {
+    transition: all 0.3s;
+}
+
+#generate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 结果区域效果 */
+#result-section {
+    transition: all 0.5s;
+}
+
+/* 页脚样式 */
+footer {
+    margin-top: 100px;
+}
+
+/* 响应式调整 */
+@media (max-width: 576px) {
+    .container {
+        padding: 15px;
+    }
+}
+
+/* 添加到现有样式表的末尾 */
+
+/* 照片裁剪区域样式 */
+.image-container {
+    max-width: 100%;
+    max-height: 400px;
+    width: 400px;
+}
+
+.image-container img {
+    display: block;
+    max-width: 100%;
+}
+
+.preview-container {
+    width: 120px;
+    text-align: center;
+}
+
+#preview-box {
+    margin: 0 auto;
+    background-color: #f2f2f2;
+    background-image: linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%, #ddd), 
+                      linear-gradient(45deg, #ddd 25%, transparent 25%, transparent 75%, #ddd 75%, #ddd);
+    background-size: 10px 10px;
+    background-position: 0 0, 5px 5px;
+}
+
+/* 响应式调整 */
+@media (max-width: 576px) {
+    .image-container {
+        width: 100%;
+    }
+    
+    .preview-container {
+        margin-top: 15px;
+    }
+    
+    .d-flex.gap-3.align-items-start {
+        flex-direction: column;
+    }
+}
+
+/* 照片裁剪模态窗口样式 */
+.modal-body .image-container {
+    max-height: 400px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.modal-body .preview-container {
+    text-align: center;
+    margin: 15px 0;
+}
+
+/* 让裁剪区域图片充分可交互 */
+.cropper-container {
+    z-index: 1060 !important; /* 确保裁剪器在模态窗口内正常工作 */
+}
+
+.cropper-view-box,
+.cropper-face {
+    border-radius: 0; /* 使裁剪框更适合证件照 */
+}
+
+/* 确保预览容器有合适背景 */
+#preview-box {
+    background-color: #f8f8f8;
+    background-image: linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee), 
+                    linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%, #eee);
+    background-size: 10px 10px;
+    background-position: 0 0, 5px 5px;
+}
