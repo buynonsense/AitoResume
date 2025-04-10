@@ -78,6 +78,22 @@
       /* 个人信息样式 */
       .info-item {
         margin: 8px 0;
+        word-wrap: break-word; /* 允许长单词断行 */
+        overflow-wrap: break-word; /* 现代浏览器中的属性 */
+      }
+
+      .info-item span {
+        display: inline-block; /* 允许内容换行 */
+        word-break: break-word; /* 在必要时断词 */
+        max-width: 100%; /* 限制最大宽度 */
+      }
+
+      /* 特别处理图标，避免它被换行 */
+      .info-item .icon {
+        display: inline-block;
+        margin-right: 10px;
+        color: #3498db;
+        vertical-align: top; /* 确保图标与文字顶部对齐 */
       }
 
       .icon {
@@ -217,6 +233,46 @@
         font-size: 0.9em;
         margin-bottom: 6px;
       }
+
+      /* 在线访问链接样式 */
+      .online-url {
+        margin-top: 10px; /* 增加一些上边距 */
+        color: #7f8c8d; /* 修改颜色 */
+      }
+
+      .online-url a {
+        color: #3498db; /* 链接颜色 */
+        text-decoration: none; /* 移除下划线 */
+      }
+
+      .online-url a:hover {
+        text-decoration: underline; /* 悬停时显示下划线 */
+      }
+
+      /* 个人博客与社交账号样式 */
+      .profiles {
+        margin-top: 15px;
+      }
+
+      .profile-item {
+        margin-bottom: 10px;
+      }
+
+      .profile-link {
+        display: flex;
+        align-items: center;
+        margin: 0;
+      }
+
+      .profile-link a {
+        color: #3498db;
+        text-decoration: none;
+        margin-left: 5px;
+      }
+
+      .profile-link a:hover {
+        text-decoration: underline;
+      }
     </style>
   </head>
   <body>
@@ -327,12 +383,59 @@
                 <span class="time-period">{{ project.time_period }}</span>
               </div>
               <div class="project-description no-indent">
-                {{ project.description }}
+                {{ project.description }} {% if project.url %}
+                <p class="online-url">
+                  在线访问：
+                  <a href="{{ project.url }}" target="_blank"
+                    >{{ project.url }}</a
+                  >
+                </p>
+                {% endif %}
               </div>
             </div>
             {% endfor %}
           </div>
         </div>
+
+        <!-- 个人博客 & 社交账号 -->
+        {% if personal.profiles %}
+        <div class="section">
+          <h2>个人博客 & 社交账号</h2>
+          <div class="profiles">
+            {% if personal.blog_url %}
+            <div class="profile-item">
+              <p class="profile-link">
+                <span class="icon">📝</span>
+                个人博客：
+                <a href="{{ personal.blog_url }}" target="_blank"
+                  >{{ personal.blog_url }}</a
+                >
+              </p>
+            </div>
+            {% endif %} {% if personal.github_url %}
+            <div class="profile-item">
+              <p class="profile-link">
+                <span class="icon">💻</span>
+                GitHub：
+                <a href="{{ personal.github_url }}" target="_blank"
+                  >{{ personal.github_url }}</a
+                >
+              </p>
+            </div>
+            {% endif %} {% for profile in personal.profiles %}
+            <div class="profile-item">
+              <p class="profile-link">
+                <span class="icon">{{ profile.icon }}</span>
+                {{ profile.name }}：
+                <a href="{{ profile.url }}" target="_blank"
+                  >{{ profile.url }}</a
+                >
+              </p>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
       </div>
     </div>
   </body>

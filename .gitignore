@@ -1,0 +1,52 @@
+# Python相关忽略项
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+env.bak/
+venv.bak/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+
+# 项目特定忽略项
+.env
+# 但不忽略模板文件
+!.env.template
+
+static/resumes/*
+static/uploads/*
+output/
+*.log
+
+# 保留目录结构但忽略内容
+!static/resumes/.gitkeep
+!static/uploads/.gitkeep
+
+# IDE相关忽略项
+.idea/
+.vscode/
+*.swp
+*.swo
+.project
+.pydevproject
+.settings/
+
+# 系统相关忽略项
+.DS_Store
+Thumbs.db
+desktop.ini
+.directory
+
+# 其他
+.coverage
+htmlcov/
+.tox/
+coverage.xml
+*.cover

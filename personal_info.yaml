@@ -1,10 +1,21 @@
 # 基本信息
 name: "张三"
-photo: "static/uploads/sonic.jpg"
 birth: "1995-01-01"
 education_level: "硕士研究生"
 phone: "13800138000"
 email: "example@email.com"
+
+# 个人博客和社交账号
+blog_url: "https://myblog.example.com"
+github_url: "https://github.com/zhangsan"
+# 其他社交账号（可选）
+profiles:
+  - name: "LinkedIn"
+    url: "https://linkedin.com/in/zhangsan"
+    icon: "👔"
+  - name: "知乎"
+    url: "https://zhihu.com/people/zhangsan"
+    icon: "❓"
 
 # 教育经历
 education:
@@ -32,7 +43,9 @@ projects:
   - name: "智能客服系统"
     time_period: "2020.03 - 2020.12"
     description: "基于Python和自然语言处理技术开发的智能客服系统，使用Flask框架搭建后端，用Vue.js实现前端，部署在AWS云服务上。系统能够自动回答用户常见问题，提高客服效率30%。"
+    url: "https://github.com/zhangsan/ai-customer-service"
     
   - name: "数据可视化分析平台"
     time_period: "2019.05 - 2019.12"
     description: "使用Django和React开发的数据分析平台，集成了多种数据源，提供实时数据分析和可视化功能，支持自定义报表生成。项目负责后端API设计和数据处理模块。"
+    url: "https://data-vis-demo.example.com"
