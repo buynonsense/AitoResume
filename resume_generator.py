@@ -301,6 +301,61 @@ class ResumeGenerator:
         # 增强项目经验
         print("正在优化项目经验...")
         enhanced_projects = self.enhance_project_experience(job_description)
+
+        # 处理手动置顶技能（如果有）并将其置于AI生成技能之前
+        def _format_manual_skills(manual_skills):
+            """将 manual_skills 规范化为 HTML 字符串，保证每项使用 .skill-item 包裹"""
+            if not manual_skills:
+                return ''
+
+            # 如果是单个字符串，可能已经是HTML或逗号分隔的纯文本
+            if isinstance(manual_skills, str):
+                s = manual_skills.strip()
+                # 简单判断是不是HTML（包含<div>或<span>)
+                if re.search(r'<\s*div|<\s*span|<\s*ul', s):
+                    return s
+                # 否则按逗号或换行分割
+                parts = re.split(r'[,，\n]+', s)
+            elif isinstance(manual_skills, list):
+                parts = [str(x).strip() for x in manual_skills if str(x).strip()]
+            else:
+                # 其他类型，转为字符串并作为一项
+                parts = [str(manual_skills).strip()]
+
+            items = []
+            for p in parts:
+                if not p:
+                    continue
+                # 如果已经包含 .skill-item 类，则直接保留
+                if re.search(r"class=[\"']?skill-item[\"']?", p):
+                    items.append(p)
+                else:
+                    # 转义 HTML 特殊字符简单处理
+                    esc = (p.replace('&', '&amp;')
+                           .replace('<', '&lt;')
+                           .replace('>', '&gt;'))
+                    items.append(f"<div class='skill-item'>{esc}</div>")
+
+            return ''.join(items)
+
+        manual_skills = self.personal_info.get('manual_skills')
+        manual_html = _format_manual_skills(manual_skills)
+
+        # 合并AI生成的掌握技能，手工技能放在前
+        ai_skills_html = job_specific_content.get('掌握技能', '') or ''
+        # 如果AI返回的是纯文本（无<div>），则尝试按逗号分割并包装
+        if ai_skills_html and not re.search(r'<\s*div|<\s*span|<\s*ul', ai_skills_html):
+            parts = re.split(r'[,，\n]+', ai_skills_html)
+            wrapped = ''.join([f"<div class='skill-item'>{p.strip()}</div>" for p in parts if p.strip()])
+            ai_skills_html = wrapped
+
+        # 最终的掌握技能HTML：手动在前，AI在后。如果两者都有逗号分隔或原生HTML则保留
+        if manual_html and ai_skills_html:
+            job_specific_content['掌握技能'] = manual_html + ai_skills_html
+        elif manual_html:
+            job_specific_content['掌握技能'] = manual_html
+        else:
+            job_specific_content['掌握技能'] = ai_skills_html
         
         # 修改项目经验中的缩进
         for project in enhanced_projects:
